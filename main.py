@@ -3,29 +3,43 @@ import xlsxwriter
 import os
 from openpyxl import load_workbook
 from tkinter import *
-from random import random
-# from math import exp, log, sqrt
+from math import exp, log, sqrt
 from itertools import permutations
-# from tkinter.ttk import Progressbar
-# import time
-# import random
+import time
+from tkinter import messagebox
+from random import random, uniform, gauss
+import winsound
+frequency = 1000  # Set Frequency To 2500 Hertz
+duration = 100  # Set Duration To 1000 ms == 1 second
+winsound.Beep(frequency, duration)
 
 global msayisi
 global ssayisi
 global nehgantsira
 
+def kapatma2():
+    window0.destroy()
 
 def degergetir():
     global msayisi
     global ssayisi
-    sonuc2 = Label(text=str(issayisi.get()) + '    /    ' + str(makinesayisi.get()) + '    /   F   /   Fmax   ',
-                   fg='orange', bg='purple', width=40, font=196)
-    sonuc2.place(x=720, y=350)
+    sonuc2 = Label(text=str(issayisi.get()) + '   /   ' + str(makinesayisi.get()) + '   /  F  /  Fmax  ',
+                   fg='white', bg='purple', width=20, font=196)
+    sonuc2.place(x=720, y=100)
     msayisi = int(makinesayisi.get())
     ssayisi = int(issayisi.get())
+    if cb2.get() == 1:
+        buton_baslat['state'] = NORMAL
+        buton_baslat.configure(text='B A Ş L A T', bg='green', fg='white', font=36)
+    elif cb2.get() == 0:
+        buton_baslat['state'] = DISABLED
+        buton_baslat.configure(text='Başlatılamaz!', bg='gray', fg='white')
+
 
 
 def sonucac():
+    messagebox.showinfo('Bilgilendirme', 'Excel dosyası açılacak. Programın devam edebilmesi için'
+                                         ' Excel dosyasını kapatmayı unutmayınız.')
     os.system("sonuclarrr.xlsx")
 
 
@@ -250,18 +264,70 @@ def SA(yazmasirasi):
 
 
 def girdiac():
+    messagebox.showinfo('Bilgilendirme', 'Excel dosyası açılacak. Uygun formatta giriş yapınız. '
+                                         'Kaydettikten sonra Excel dosyasını kapatmayı unutmayınız.')
     os.system("Girdiler.xlsx")
 
 
 def calistir():
-    print("Çalışıyor...")
+    messagebox.showinfo("Bilgilendirme", "CDS-PALMER-RAP-GUPTA-NEH Algoritmaları Arkaplanda çözümlenecek.")
     window.destroy()
 
 
-kitap = load_workbook('cds 5x6.xlsx')
+def Kontrol1():
+    if cb.get() == 1:
+        buton_devam['state'] = NORMAL
+        buton_devam.configure(text='DEVAM', bg='green', fg='white')
+    elif cb.get() ==0:
+        buton_devam['state'] = DISABLED
+        buton_devam.configure(text='Onaylanmadı!', bg='gray', fg='white')
+
+
+window0 = tk.Tk()
+window0.geometry('1200x450+10+10')
+window0.configure(bg='black')
+window0.resizable(False, False)
+window0.title('Akış Tipi Atöyler İçin Sıralama Optimizasyonu')
+
+adim1 = tk.Label(window0, text='1. ADIM: Girdiler Excel dosyasını yandaki', font=24)
+adim1.place(x=10, y=10)
+adim1_2 = tk.Label(window0, text='formatta doldurup kaydediniz.', font=24)
+adim1_2.place(x=10, y=40)
+adim1_3 = tk.Label(window0, text='Sayı girişlerini el ile (formül kullanmadan) yapınız', bg='red', fg='white')
+adim1_3.place(x=40, y=100)
+adim1_4 = tk.Label(window0, text='Sütunlar, İş Sayısını; Satırlar, Makine Sayısını belirtir.', foreground='red',
+                   bg='red', fg='white')
+adim1_4.place(x=40, y=130)
+adim1_4 = tk.Label(window0, text='Tam Sayı tipinde giriş yapınız.', foreground='red', bg='red', fg='white')
+adim1_4.place(x=40, y=160)
+adim1_5 = tk.Label(window0, text='Sarı kısımlara ve boş kalacak kısımlara herhangi bir işlem yapmayınız.',
+                   foreground='red', bg='red', fg='white')
+adim1_5.place(x=40, y=190)
+adim1_6 = tk.Label(window0, text='Program çalışırken Excel dosyalarını açmayınız.', foreground='red', bg='red',
+                   fg='white')
+adim1_6.place(x=40, y=220)
+adim1_7 = tk.Label(window0, text='Dosyayı kaydedip kapattıktan sonra kutucuğu işaretleyiniz.', font=24)
+adim1_7.place(x=10, y=340)
+
+foto = PhotoImage(file="sablon.png")
+sablon = Label(window0, image=foto)
+sablon.place(x=530, y=10)
+
+buton_girdiler = Button(window0, text='Dosyayı Aç', font=128, bg='green', fg='white', command=girdiac)
+buton_girdiler.place(x=30, y=280)
+cb = IntVar()
+check_girdiler = Checkbutton(window0, text='Verileri Girdim/Onayladım', variable=cb, onvalue=1, offvalue=0,
+                             fg='white', bg='blue', font=72, state=NORMAL, selectcolor='red', command=Kontrol1)
+check_girdiler.place(x=190, y=280)
+buton_devam = Button(window0, text='Onaylanmadı!', height=2, width=20, font=36,
+                     bg='gray', fg='red', state=DISABLED, command=kapatma2)
+buton_devam.place(x=900, y=380)
+window0.mainloop()
+
+kitap = load_workbook('Girdiler.xlsx')
 kitap1 = xlsxwriter.Workbook('sonuclarrr.xlsx')
 window = tk.Tk()
-window.geometry('1200x700+10+10')
+window.geometry('1000x300+10+10')
 window.configure(bg='black')
 window.resizable(False, False)
 # form.state('normal')  #normal ekran
@@ -272,35 +338,29 @@ etiket2 = tk.Label(window, text='İş (Job) Sayısı:', font=96, width=30)
 
 makinesayisi = Entry(window, justify='right', fg='blue', bg='yellow', font=128, width=5)
 issayisi = Entry(window, justify='right', fg='blue', bg='yellow', font=128, width=5)
-adim1 = tk.Label(window, text='1. ADIM: Girdiler Excel dosyasını yandaki', font=24)
-adim1.place(x=10, y=10)
-adim1_2 = tk.Label(window, text='formatta doldurup kaydediniz.', font=24)
-adim1_2.place(x=10, y=40)
-adim2 = tk.Label(window, text='2. ADIM: n/m/F/Fmax için Makine Sayısı (m) ve ', font=24)
-adim2.place(x=10, y=150)
-adim2_1 = tk.Label(window, text='İş Sayısı (n) girip "İŞLE ve GETİR" butonuna tıklayınız.', font=24)
-adim2_1.place(x=10, y=180)
-sonuc1 = tk.Label(window, text='İşlenen Değerler--->', font=24)
-sonuc1.place(x=530, y=350)
-adim3 = tk.Label(window, text='3. ADIM: Algoritmayı Başlatınız.', font=24)
-adim3.place(x=10, y=470)
-foto = PhotoImage(file="sablon.png")
-sablon = Label(window, image=foto)
-sablon.place(x=530, y=10)
 
-etiket1.place(x=10, y=270)
-etiket2.place(x=10, y=340)
-makinesayisi.place(x=380, y=270)
-issayisi.place(x=380, y=340)
-buton_isle = Button(window, text='İŞLE VE GETİR', font=128, bg='turquoise', command=degergetir)
-buton_isle.place(x=220, y=400)
-buton_girdiler = Button(window, text='Dosyayı Aç', font=128, bg='turquoise', command=girdiac)
-buton_girdiler.place(x=30, y=80)
-check_girdiler = Checkbutton(window, text='Girişleri Yaptım ve Kaydettim.', bg='turquoise', font=72,
-                             activebackground='red', state=NORMAL)
-check_girdiler.place(x=190, y=85)
-buton_baslat = Button(window, text='ÇALIŞTIR', font=128, bg='turquoise', fg='Red', command=calistir)
-buton_baslat.place(x=330, y=460)
+adim2 = tk.Label(window, text='2. ADIM: n/m/F/Fmax için Makine Sayısı (m) ve İş Sayısı (n) girip "İŞLE ve'
+                              ' GETİR" butonuna tıklayınız.', font=24)
+adim2.place(x=10, y=10)
+etiket1.place(x=50, y=80)
+etiket2.place(x=50, y=120)
+sonuc1 = tk.Label(window, text='İşleme Alınan Problem:', font=24)
+sonuc1.place(x=500, y=100)
+adim3 = tk.Label(window, text='3. ADIM: Algoritmayı Başlatınız.', font=24)
+adim3.place(x=10, y=250)
+makinesayisi.place(x=420, y=80)
+issayisi.place(x=420, y=120)
+
+cb2 = IntVar()
+Check_isle = Checkbutton(window, text='İşle ve Getir', variable=cb2, onvalue=1, offvalue=0,
+                             fg='white', bg='blue', font=72, state=NORMAL, selectcolor='red', command=degergetir)
+Check_isle.place(x=260, y=180)
+# buton_isle = Button(window, text='İŞLE VE GETİR', font=128, bg='turquoise', command=degergetir)
+# buton_isle.place(x=260, y=180)
+
+buton_baslat = Button(window, text='Başlatılamaz!', font=128, state=DISABLED, bg='gray',
+                      fg='blue', width=40, command=calistir)
+buton_baslat.place(x=500, y=240)
 
 window.mainloop()
 
@@ -910,34 +970,37 @@ sayac23 = 0
 while sayac23 < is_sayisi:
     sayfa6.write(yazmasirasi_2, sayac23 + 2, Neh_gant[sayac23])
     sayac23 += 1
-
+time.sleep(3)
 kitap1.close()
 
 
 # os.system("sonuclarrr.xlsx")
 
 window_3 = tk.Tk()
-window_3.geometry('1300x400+150+150')
+window_3.geometry('1300x200+150+150')
 window_3.configure(bg='black')
 window_3.resizable(True, False)
 # form.state('normal')  #normal ekran
 # form.state('zoomed') #tam ekran
 window_3.title(' Tavlama Benzetimi (Simulated Annealing)')
-buton_sonuc = Button(window_3, text='Sonuçları Göster', font=128, bg='turquoise', command=sonucac)
+buton_sonuc = Button(window_3, text='Sonuçları Göster', font=128, bg='blue', fg='white', command=sonucac)
 buton_sonuc.place(x=150, y=120)
 # buton_tavlama = Button(window_3, text='TAVLAMA BENZETİMİ BAŞLAT', font=128, bg='red')
 
 
-def tumexcel():
-    os.system('yapaysonuc.xlsx')
+def kapatma():
+    messagebox.showinfo("Bilgilendirme", "Tavlama Benzetimi arka planda çözümlenmek üzere başlatılacak.")
+    window_3.destroy()
 
 
-buton_tavlama = Button(window_3, text='Tüm İhtimalleri gör', font=128, bg='red', command=tumexcel)
-buton_tavlama.place(x=450, y=120)
+winsound.Beep(frequency, duration)
 
-etiket3 = Label(window_3, text='EN İYİ FMAX', fg='orange', bg='GRAY', width=12, font=24)
+buton_tavlama = Button(window_3, text='Tavlama Benzetimi Başlat', font=128, fg='White', bg='green', command=kapatma)
+buton_tavlama.place(x=850, y=120)
+
+etiket3 = Label(window_3, text='EN İYİ FMAX', fg='red', bg='GRAY', width=12, font=24)
 etiket3.place(x=10, y=10)
-etiket4 = Label(window_3, text='EN İYİ SIRALAMA', fg='orange', bg='GRAY', width=100, font=18, wraplength=1000)
+etiket4 = Label(window_3, text='EN İYİ SIRALAMA', fg='red', bg='GRAY', width=100, font=18, wraplength=1000)
 etiket4.place(x=180, y=10)
 
 kitap2 = load_workbook('sonuclarrr.xlsx')
@@ -964,13 +1027,11 @@ del sonuc_siralamasi[0]
 # print(fmax_liste)
 # print(iyiFmax)
 kitap2.close()
-kitap3 = xlsxwriter.Workbook('yapaysonuc.xlsx')
 
-sayfa7 = kitap3.add_worksheet('SA')
 
 bas_sonuc1 = Label(window_3, text=iyiFmax, fg='black', bg='yellow', width=12, font=32)
 bas_sonuc1.place(x=10, y=40)
-bas_sonuc = Label(window_3, text=sonuc_siralamasi, fg='orange', bg='white', width=100, font=24, wraplength=1000)
+bas_sonuc = Label(window_3, text=sonuc_siralamasi, fg='green', bg='white', width=100, font=24, wraplength=1000)
 bas_sonuc.place(x=180, y=40)
 
 # Tavlama Benzetimi # Tavlama Benzetimi # Tavlama Benzetimi # Tavlama Benzetimi # Tavlama Benzetimi # Tavlama Benzetimi
@@ -999,6 +1060,7 @@ Simulated_sira = []
 #     yazmasirasi_3 += 1
 #     Simulated_sira.clear()
 # # Tüm olasılık hesabı
+imposible = 30
 
 # yenilemeli iterasyon
 # while iterasyon < 10:
@@ -1031,8 +1093,139 @@ Simulated_sira = []
 # SA(yazmasirasi)
 # Sa_fmax ----> FMax değeri yani SA(yazmasirasi) fonksiyonun bulduğu değer. En küçükleme yapmak istediğimiz. 53'e yaklaşmalı
 # Simulated_sira ------>  fonksiyonda hesaplanacak sıra. aynı zamanda move ile yeri değiştirilecek sira
-
-print()
-
-kitap3.close()
 window_3.mainloop()
+
+
+window_4 = tk.Tk()
+window_4.geometry('1300x250+150+150')
+window_4.configure(bg='black')
+window_4.resizable(True, False)
+# form.state('normal')  #normal ekran
+# form.state('zoomed') #tam ekran
+window_4.title(' Tavlama Benzetimi (Simulated Annealing)')
+
+etiket3 = Label(window_4, text='MEVCUT FMAX', fg='blue', bg='GRAY', width=12, font=24)
+etiket3.place(x=10, y=10)
+etiket4 = Label(window_4, text='MEVCUT EN İYİ SIRALAMA:', fg='blue', bg='GRAY', width=100, font=18, wraplength=1000)
+etiket4.place(x=180, y=10)
+etiket3 = Label(window_4, text='EN İYİ FMAX', fg='white', bg='brown', width=12, font=24)
+etiket3.place(x=10, y=110)
+etiket4 = Label(window_4, text='TAVLAMA SONUCU BULUNAN EN İYİ SIRALAMA:',
+                fg='white', bg='brown', width=100, font=18, wraplength=1000)
+etiket4.place(x=180, y=110)
+
+sayac30 = 0
+islerin_liste = []
+while sayac30 < is_sayisi:               # iş listesi eklemesi yapılır#
+    sayac30 += 1
+    islerin_liste.append(sayac30)
+# print(islerin_liste)
+# print(iyiFmax)
+fkontrol = iyiFmax
+sirakontrol = []
+perm = permutations(islerin_liste, 4)
+listegol = []
+sayac28 = 0
+sayac29 = 0
+bas_sonuc2 = Label(window_4, text='Tavlama Benzetimi Daha İyi Bir Sıralama Bulamadı', fg='green',
+                   bg='white', width=100, font=24, wraplength=1000)
+for i in list(perm):
+    while sayac28 < 4:
+        listegol.append(i[sayac28])
+        sayac28 += 1
+    farklistesi = list(set(islerin_liste) - set(listegol))
+    while sayac29 < len(farklistesi):
+        listegol.append(farklistesi[sayac29])
+        sayac29 += 1
+    # print("sfsf", farklistesi)
+    sayac28 = 0
+    sayac29 = 0
+    Simulated_sira = listegol
+    SA(yazmasirasi)
+    # print(Simulated_sira ,max(Sa_fmax))
+    if fkontrol > max(Sa_fmax):
+        fkontrol = max(Sa_fmax)
+        sirakontrol = listegol
+        # print(listegol)
+        bas_sonuc2 = Label(window_4, text=sirakontrol, fg='blue', bg='white', width=100, font=24, wraplength=1000)
+        # print('Fmax:', fkontrol, 'Siralama', sirakontrol)
+    listegol.clear()
+time.sleep(5)
+bas_sonuc3 = Label(window_4, text=fkontrol, fg='black', bg='yellow', width=12, font=32)
+bas_sonuc3.place(x=10, y=140)
+bas_sonuc2.place(x=180, y=140)
+bas_sonuc1 = Label(window_4, text=iyiFmax, fg='black', bg='yellow', width=12, font=32)
+bas_sonuc1.place(x=10, y=40)
+bas_sonuc = Label(window_4, text=sonuc_siralamasi, fg='black', bg='white', width=100, font=24, wraplength=1000)
+bas_sonuc.place(x=180, y=40)
+##
+
+##
+
+##
+
+## TAVLAMA BAŞLANGIÇ
+
+## Butonsuz tetikleniyor        D U Z E L T DUZELT D U Z E L T DUZELT D U Z E L T
+
+while iterasyon > 20000:
+    # Optimize etmek istedigimiz fonksiyon
+    GANT('', sonuc, sayfano, yazmasirasi_2)
+    # Custom değerler değişiklik aşırı yavaşlatır...
+    T = Ti = 10000  # Baslangic sicakligi
+    a = 0.95  # adim katsayisi cooling ratio 0.88 - 0.99 arasi seçilir
+    max_iter = 2000  # maksimum sogutma sayisi
+    n_rep = 20  # hersogutma arasindaki isitma sayisi
+    random_starting_point = uniform(3, 9)  # 3 6 arasi
+    # rastgele bir değer üret
+
+    # p = random_starting_point # Kullanmadım diğer algoritmalardan iyi sonuçla başlansın diye (rastgele değil)
+    cost = GANT(p)  # baslangic cost ifadesi   # diğer algoritmalardan geleni al
+    cost = GANT('eniyi')
+    swap = [0, is_sayisi - 1]
+    swap_sayaci = 0
+    if len(swap)> swap_sayaci:
+        random.siralamamx2(random(1,9)) # 1 ile 9 arasında komşu değişikliği yap 9dan azsa baştan tekrar say
+        # aynisi gelirse bir sağa kay
+    else:
+        swap.reverse()  # değiştirilen iki fonksiyonu ters çevir HEMEN YAPAR...
+    cool_it = 0
+    while cool_it < max_iter:  # Sogutma dongusu
+        cool_it += 1
+        temp_it = 0
+        while temp_it < n_rep:  # Isitma dongusu
+            temp_it += 1
+            # gauss dagilimdan rastgele sayi cek
+            current_p = p + gauss(0, T) * log(sqrt(1 + cost))
+            # Diger gelebilecek ifadeler
+            # p + gauss(0, T)
+            # p + gauss(0, T) * cost
+            # p + gauss(0, 1) -> T yerine sabit deger de konulabilir.
+            # cost'u hesapla Criteria dediğimiz DELTA
+            # Kullanılması gereken::: e^(-Delta/T)
+            current_cost = current_p
+            criteria = current_cost - cost  # Kriteri hesapla
+            print("Step: ", cool_it, " p: ", p, " : ", current_cost)
+            # Yeni nokta daha iyiyse p'yi guncelle
+            if criteria <= 0:
+                cost = current_cost
+                p = current_p
+            else:
+                # kotuyse belirli bir olasilikla kotu noktaya gec
+                # bu bizi local minima'dan kurtarir.
+                # criteria / T pozitif olmak durumunda
+                # 1/e^(pozitif) sayi 0'dan sonsuz [1,0) arasi degerler alir
+                # random() da [0, 1) arasi uniform dagilimli degerler uretir.
+                if random() < exp(-criteria / T):
+                    cost = current_cost
+                    p = current_p
+        T *= a  # sıcaklık güncellemesi. En iyi bu çalışıyor
+        # SONLANDIRMA ŞARTLARI
+        # iterasyon sayısına ulaşıldıkça sıcaklık sıfıra yaklaşınca
+        if T<1:
+            break
+        # T = exp(-a*cool_it) * Ti # Sogutma ilerledikce guncelleme fonksiyonu farkli olabilir
+winsound.Beep(frequency, duration)
+window_4.mainloop()
+
+
